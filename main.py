@@ -39,27 +39,42 @@ clock = pygame.time.Clock()
 #assets
 bg = pygame.image.load("utility/arena.png")
 
-def player():
-    p_up = int(position)
-    obj = pygame.image.load(act[int(p_up)])     
-    obj = pygame.transform.scale(obj, (300,300)) 
-    player = obj.get_rect(center=(50,340))
-    if flip:
-        obj = pygame.transform.flip(obj, True,False)
-    else:
-        obj = pygame.transform.flip(obj, False,False)
-    screen.blit(obj, player)    
+class Person():
+    def __init__(self, x, y,  f):
+        
+          self.p = int(position)
+          self.f = f
+          self = pygame.image.load(self.f[self.p])
+          self = pygame.transform.scale(self, (300,300))
+          screen.blit(self, (x,y))
+    
+
+user = Person(x,140,action.idle)
+
+
+#def player():
+#    p_up = int(position)
+#    obj = pygame.image.load(act[int(p_up)])     
+#    obj = pygame.transform.scale(obj, (300,300)) 
+#    player = obj.get_rect(center=(x,290))
+#    
+#    if flip:
+#        obj = pygame.transform.flip(obj, True,False)
+#    else:
+#        obj = pygame.transform.flip(obj, False,False)
+#    screen.blit(obj, player)    
 
 def enemy():
     p_up = int(position)
     obj = pygame.image.load(act_enenmy[int(p_up)])      
     obj = pygame.transform.scale(obj, (300,300))
     obj = pygame.transform.flip(obj, True, False)
+    enemy = obj.get_rect(center=(enemy_x,290))
     if enemy_flip:
         obj = pygame.transform.flip(obj, True,False)
     else:
         obj = pygame.transform.flip(obj, False,False)
-    screen.blit(obj, (enemy_x, 140))    
+    screen.blit(obj, enemy)    
 
 def healthplayer():
     sprite = pygame.Surface((300,10))   
@@ -205,7 +220,7 @@ while True:
     screen.fill("grey")
     screen.blit(bg, (0,0))
     
-    player()
+    
     enemy()
 
     healthplayer()
