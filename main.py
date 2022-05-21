@@ -1,35 +1,21 @@
-#importsaaaa
-from pickle import FALSE
-from turtle import backward
+#imports
+
 import pygame
 from sys import exit
 import action
 
-x = 50
-y = 140
-x_u = 0
-long_Range = x + 200
 enemy_x = 600
 gravity = 20
-players_position= True
 health_two_m = 150 
 health_two_w = 300
 health_two_m = health_two_w - health_two_m - health_two_m 
 speed = 0.7
-forward = False
-backward = False
-forward_enemy = False
-backward_enemy = False
-attack = True
-enemy_actions = ["run", "attack","block","jump"]
-actions = "run"
-WIDTH = 960
-HEIGHT = 480
-act = action.idle
-act_enenmy = action.idle
+
+WIDTH = 1380
+HEIGHT = 820
+
 position = speed
-flip = False
-enemy_flip = False
+
 
 #display
 pygame.init()
@@ -37,57 +23,38 @@ screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("pixelwar")
 clock = pygame.time.Clock()
 #assets
-bg = pygame.image.load("utility/arena.png")
+bg = pygame.image.load("utility\Wallpaper.jpg")
 
-class Person():
-    def __init__(self, x, y,  f):
+class Players():
+    def __init__(self, x):
+        self.x = x
+        self.frames =  1
+        self = pygame.image.load(action.run[0])
+        self = pygame.transform.scale(self, (200, 340))
+        screen.blit(self, (x,400))
         
-          self.p = int(position)
-          self.f = f
-          self = pygame.image.load(self.f[self.p])
-          self = pygame.transform.scale(self, (300,300))
-          screen.blit(self, (x,y))
-    
-
-user = Person(x,140,action.idle)
-
-
-#def player():
-#    p_up = int(position)
-#    obj = pygame.image.load(act[int(p_up)])     
-#    obj = pygame.transform.scale(obj, (300,300)) 
-#    player = obj.get_rect(center=(x,290))
-#    
-#    if flip:
-#        obj = pygame.transform.flip(obj, True,False)
-#    else:
-#        obj = pygame.transform.flip(obj, False,False)
-#    screen.blit(obj, player)    
-
-def enemy():
-    p_up = int(position)
-    obj = pygame.image.load(act_enenmy[int(p_up)])      
-    obj = pygame.transform.scale(obj, (300,300))
-    obj = pygame.transform.flip(obj, True, False)
-    enemy = obj.get_rect(center=(enemy_x,290))
-    if enemy_flip:
-        obj = pygame.transform.flip(obj, True,False)
-    else:
-        obj = pygame.transform.flip(obj, False,False)
-    screen.blit(obj, enemy)    
-
-def healthplayer():
-    sprite = pygame.Surface((300,10))   
-    inner_bar = pygame.draw.rect(sprite, "#ff0000", [0, 0, 100,sprite.get_height()],10)
-    screen.blit(sprite, (50, 10))
-def healthenemy():
-    sprite = pygame.Surface((300,10))
-    pygame.draw.rect(sprite, "#ff0000", [health_two_m, 0, health_two_w,sprite.get_height()], 10)
-    screen.blit(sprite, (600, 10))
-
-def timer():
-    pygame.draw.rect(screen, "black", [460 , 10, 50,50])
+    def animatiion(self):
+        if int(self.frames) == len(action.run)-1:
+           self.frames = 0
+        else:
+            self.frames += 1
+        print(self.frames)
+                  
+class health():
+    def __init__(self,color, margin,innerWidth, width):
+        self.width = width
+        self.innerWidth = innerWidth
+        self.margin = margin
+        self.color = color
+        self = pygame.Surface((500,30))
+        innerSelf = pygame.draw.rect(self, color, [margin, innerWidth, width, self.get_height()])
+        screen.blit(self, (50,20))
+class timer():
+    def __init__(self):
+        self = pygame.draw.rect(screen, "black", [460 , 10, 50,50])
  
+#Elements
+
 #main function
 while True:
 
@@ -187,10 +154,6 @@ while True:
     else:
         enemy_x = enemy_x    
    
-    if int(position) >= len(act)-1 or int(position) >= len(act_enenmy)-1:
-        position = speed
-    else:
-        position += speed
 
     if enemy_x != x +100:
         forward_enemy = True
@@ -221,10 +184,9 @@ while True:
     screen.blit(bg, (0,0))
     
     
-    enemy()
 
-    healthplayer()
-    healthenemy()
+    health("red",0,0,50)
     timer()
+    
     pygame.display.update()
     clock.tick(25)
