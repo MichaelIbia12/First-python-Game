@@ -1,10 +1,11 @@
 #imports
-import pygame
 from sys import exit
+
+import pygame
+
 import action
 
-
-FRAME_SPEED = 0.7
+FRAME_SPEED = 1
 WIDTH = 1380
 HEIGHT = 820
 player_x = 40
@@ -24,9 +25,10 @@ playerActionFile = action.idle
 enemyActionFile = action.idle
 PlayerFlip = False
 EnemyFlip = False
-EnemyPrediction = ["run", "block","attack","jump"]
-CloseRange = 200 + player_x
+EnemyAttack = False
 
+AttackCounter = 0
+Blockcounter = 0
 
 #display
 pygame.init()
@@ -34,7 +36,8 @@ screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("pixelwar")
 clock = pygame.time.Clock()
 #assets
-bg = pygame.image.load("utility\Wallpaper.jpg")
+bg = pygame.image.load("utility/bitmap.png")
+floor = pygame.image.load("utility/rect10833.png")
 
 class Player():
     def __init__(self,x,y,):  
@@ -45,7 +48,7 @@ class Player():
         self = pygame.image.load(playerActionFile[int(frames)])
         if PlayersDirection:
              self = pygame.transform.flip(self, True,False)
-        self = pygame.transform.scale(self, (200, 340))
+        self = pygame.transform.scale(self, (400, 400))
         screen.blit(self, (x,y))
     
  
@@ -58,7 +61,7 @@ class Enemy():
         self.x = x
         self.y = y
         self = pygame.image.load(enemyActionFile[int(frames)])
-        self = pygame.transform.scale(self, (200, 340))
+        self = pygame.transform.scale(self, (400, 400))
         self = pygame.transform.flip(self, True,False)
         if EnemysDirection:
              self = pygame.transform.flip(self, True,False)
@@ -128,9 +131,11 @@ while True:
                 players_movement = "" 
                 PlayersWalkSpeed = 0
     
-             
+    CloseRange = 200 + player_x        
     screen.fill("grey")
+  
     screen.blit(bg, (0,0))
+    screen.blit(floor, (0,500))
     frames += FRAME_SPEED
     health("red",0,0,50,False)
     health("blue",0,0,50,True)
@@ -155,20 +160,7 @@ while True:
     if player_y <= 200:
        PlayersJumpSpeed = 0
        
-    if enemy_movement == "forward":
-       enemyActionFile= action.run  
-       EnemysDirection = False   
-          
-    if enemy_movement == "backward":
-       enemyActionFile= action.run
-       EnemysDirection = True
-       
-    if enemy_movement == "up":
-       enemyActionFile= action.jump
-    if enemy_movement == "down":
-         pass       
-    if enemy_movement == "":
-        enemyActionFile= action.idle  
+   
     
     if players_movement == "forward":
        playerActionFile= action.run  
@@ -182,18 +174,40 @@ while True:
          pass       
     if players_movement == "":
         playerActionFile= action.idle        
+    
+    if player_x < enemy_x:
+        enemy_movement = "forward"
+        print("t")   
+    
     EnemysWalkSpeed = 10
-        
-    if enemy_x <= CloseRange:
-            print("att")
+    if enemy_x == CloseRange:
+            #problem
+            enemy_movement = "idle"
+            EnemyAttack = True
             EnemysWalkSpeed = 0
-            
-    
-    
   
+    if enemy_movement == "forward":
+        enemyActionFile= action.run  
+        EnemysDirection = False   
+        #problem      
+    if enemy_movement == "backward":
+        enemyActionFile= action.run
+        EnemysDirection = True
+       
+    if enemy_movement == "up":
+        enemyActionFile= action.jump
+      
+    if enemy_movement == "idle":
+        enemyActionFile= action.idle  
+    if EnemyAttack:
+        enemyActionFile = action.attack
+        
+    #predictions
     
+    if players_movement == "forward" and EnemyAttack:
+        EnemysWalkSpeed = -10
         
         
     pygame.display.update()
-    print(player_x, enemy_x)
+    print(frames)
     clock.tick(60)
